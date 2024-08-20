@@ -9,14 +9,14 @@ from basicsr.utils import imwrite
 from skimage.util.shape import view_as_windows
 
 
-def retouch(image_slice, model_path):
-    restorer = GFPGANer(
-        model_path=model_path,
-        arch="original",
-        channel_multiplier=1,
-        bg_upsampler=None)
-    retouch_image = restorer.enhance_part(image_slice)
-    return retouch_image
+# def retouch(image_slice, model_path):
+#     restorer = GFPGANer(
+#         model_path=model_path,
+#         arch="original",
+#         channel_multiplier=1,
+#         bg_upsampler=None)
+#     retouch_image = restorer.enhance_part(image_slice)
+#     return retouch_image
 
 
 def retouch_bbox(image, bbox, restorer, window_size=512, reverse_pixel=12, debug=False, debug_folder=""):
@@ -46,8 +46,8 @@ def retouch_bbox(image, bbox, restorer, window_size=512, reverse_pixel=12, debug
     return retouched_bbox
 
 
-def process_image_person(original_image_path, output_retouch_path, output_stacked_path, restorer, stacked=False, reverse_pixel=12, debug=False):
-    yolo_model = YOLO("yolov8x.pt")
+def process_image_person(original_image_path, output_retouch_path, output_stacked_path, restorer, yolo_model, stacked=False, reverse_pixel=12, debug=False):
+    
     original_image = cv2.imread(original_image_path)
     gt = original_image.copy()
     if original_image is None:
@@ -61,6 +61,7 @@ def process_image_person(original_image_path, output_retouch_path, output_stacke
         os.makedirs(image_debug_folder, exist_ok=True)
     
     results = yolo_model.predict(original_image_path, imgsz=1024, conf=0.35, classes=[0])
+    
     detected_boxes = []
     for result in results:
         boxes = result.boxes
@@ -89,11 +90,15 @@ def main(original_images_dir, output_retouch_dir, output_stack_dir, model_path, 
         if not os.path.exists(output_stack_dir):
             os.makedirs(output_stack_dir)    
     original_images = sorted(os.listdir(original_images_dir))
+    
+    yolo_model = YOLO("yolov8x.pt")
+    
     restorer = GFPGANer(
         model_path=model_path,
         arch="original",
         channel_multiplier=1,
         bg_upsampler=None)
+    
     for original_image_name in original_images:
         original_image_path = os.path.join(original_images_dir, original_image_name)
         output_retouch_path = os.path.join(output_retouch_dir, original_image_name)
@@ -101,7 +106,7 @@ def main(original_images_dir, output_retouch_dir, output_stack_dir, model_path, 
         if stacked:
             output_stacked_path = os.path.join(output_stack_dir, original_image_name)
         try:
-            process_image_person(original_image_path, output_retouch_path, output_stacked_path, restorer, stacked=stacked, reverse_pixel=reverse_pixel, debug=debug)
+            process_image_person(original_image_path, output_retouch_path, output_stacked_path, restorer, yolo_model, stacked=stacked, reverse_pixel=reverse_pixel, debug=debug)
         except Exception as e:
             print("Image Failed: ",original_image_name)
             print("Error: ", e)
@@ -109,9 +114,9 @@ def main(original_images_dir, output_retouch_dir, output_stack_dir, model_path, 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Retouch skin areas in detected persons.")
-    parser.add_argument("--original_images_dir", type=str, default="july1_test", help="Path to the directory of original images.")
-    parser.add_argument("--output_retouch_dir", type=str, default="full_body_retouched", help="Path to save the retouched images.")
-    parser.add_argument("--output_stack_dir", type=str, default="full_body_retouched_stacked", help="Path to save the stack retouched images.")
+    parser.add_argument("--original_images_dir", type=str, default="inputs/whole_imgs/", help="Path to the directory of original images.")
+    parser.add_argument("--output_retouch_dir", type=str, default="outputs/pred_imgs", help="Path to save the retouched images.")
+    parser.add_argument("--output_stack_dir", type=str, default="outputs/stacked_imgs", help="Path to save the stack retouched images.")
     parser.add_argument("--retouch_model_path", type=str, default="experiments/pretrained_models/retouch_20231211.pth", help="Path to the retouch model.")
     parser.add_argument('--stacked', action='store_true', help='Stack the images')
     parser.add_argument('--reverse_pixel', type=int, default=12, help='Pixel offset for the sliding window.')
