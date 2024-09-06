@@ -13,37 +13,17 @@ def main():
     """Inference demo for GFPGAN (for users).
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-i',
-        '--input',
-        type=str,
-        default='inputs/whole_imgs',
-        help='Input image or folder. Default: inputs/whole_imgs')
-    parser.add_argument('-o', '--output', type=str, default='results', help='Output folder. Default: results')
-    # we use version to select models, which is more user-friendly
-    parser.add_argument(
-        '-v', '--version', type=str, default='1.3', help='GFPGAN model version. Option: 1 | 1.2 | 1.3. Default: 1.3')
-    parser.add_argument(
-        '-s', '--upscale', type=int, default=2, help='The final upsampling scale of the image. Default: 2')
-
-    parser.add_argument(
-        '--bg_upsampler', type=str, default='realesrgan', help='background upsampler. Default: realesrgan')
-    parser.add_argument(
-        '--bg_tile',
-        type=int,
-        default=400,
-        help='Tile size for background sampler, 0 for no tile during testing. Default: 400')
+    parser.add_argument('-i','--input', type=str, default='/home/humayunirshad/Desktop/glare_removal/testset_1', help='Input image or folder.')
+    parser.add_argument('-o', '--output', type=str, default='/home/humayunirshad/Desktop/glare_removal/202408_18_results/GFPGAN/testset_1', help='Output folder.')
+    parser.add_argument('-v', '--version', type=str, default='1', help='GFPGAN model version. Option: 1 | 1.2 | 1.3. Default: 1.3')
+    parser.add_argument('-s', '--upscale', type=int, default=2, help='The final upsampling scale of the image. Default: 2')
+    parser.add_argument('--bg_upsampler', type=str, default='', help='background upsampler. Default: realesrgan')
+    parser.add_argument('--bg_tile', type=int, default=400, help='Tile size for background sampler, 0 for no tile during testing. Default: 400')
     parser.add_argument('--suffix', type=str, default=None, help='Suffix of the restored faces')
     parser.add_argument('--only_center_face', action='store_true', help='Only restore the center face')
     parser.add_argument('--aligned', action='store_true', help='Input are aligned faces')
-    parser.add_argument(
-        '--ext',
-        type=str,
-        default='auto',
-        help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs. Default: auto')
+    parser.add_argument('--ext', type=str, default='auto', help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs.')
     parser.add_argument('-w', '--weight', type=float, default=0.5, help='Adjustable weights.')
-    args = parser.parse_args()
-
     args = parser.parse_args()
 
     # ------------------------ input & output ------------------------
@@ -108,7 +88,7 @@ def main():
         raise ValueError(f'Wrong model version {args.version}.')
 
     # determine model paths
-    model_path = os.path.join('experiments/pretrained_models', model_name + '.pth')
+    model_path = '/data/pd/saved_models_danial/gfpgan/202408_18_glare/net_g_95000.pth'#os.path.join('experiments/pretrained_models', model_name + '.pth')
     if not os.path.isfile(model_path):
         model_path = os.path.join('gfpgan/weights', model_name + '.pth')
     if not os.path.isfile(model_path):

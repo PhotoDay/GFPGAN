@@ -1,0 +1,11 @@
+python inference_gfpgan_combined.py -rmp /data/pd/trained_models/gfpgan/20240819_teeth/net_g_415000.pth  -i /data/pd/datasets/teeth_whitening/set_2/original/ -o /data/pd/datasets/teeth_whitening/set_2_20240819_ -c 1 -m 2
+
+python inference_gfpgan_combined.py -rmp /data/pd/trained_models/gfpgan/20240819_teeth/net_g_415000.pth  -i ~/Desktop/teeth_whitening/testset_1/ -o ~/Desktop/teeth_whitening/20240819_results/testset_1_  -c 1 -m 2 
+
+python inference_gfpgan_combined.py -rmp /data/pd/trained_models/gfpgan/20240819_teeth/net_g_415000.pth  -i ~/Desktop/teeth_whitening/testset_2/ -o ~/Desktop/teeth_whitening/20240819_results/testset_2_  -c 1 -m 2 
+
+# python inference_gfpgan_combined.py -rmp /data/pd/trained_models/gfpgan/20240822_glare/net_g_95000.pth -i ~/Desktop/glare_removal/testset_4 -o ~/Desktop/glare_removal/20240822_results/gfpgan_testset_4_m -c 0 -m 2
+
+# python overlap_fb_retouch.py -id /data/pd/datasets/full_body_retouching/set_2 -od /data/pd/datasets/full_body_retouching/set_2_pr -osd /data/pd/datasets/full_body_retouching/set_2_stacked -s -i 2
+
+
