@@ -39,7 +39,7 @@ def retouch_bbox(image, bbox, restorer, window_size=512, reverse_pixel=12, debug
             if debug:
                 window_filename = f"{start_x}_{start_y}.jpg"
                 window_path = os.path.join(debug_folder, window_filename)
-                cv2.imwrite(window_path, person_window)        
+                cv2.imwrite(window_path, person_window)
             retouched_window = restorer.enhance_part(person_window)
             padded_person_image[start_y:start_y + window_size, start_x:start_x + window_size, :] = retouched_window
     retouched_bbox = padded_person_image[:person_image.shape[0], :person_image.shape[1], :]
@@ -47,7 +47,7 @@ def retouch_bbox(image, bbox, restorer, window_size=512, reverse_pixel=12, debug
 
 
 def process_image_person(original_image_path, output_retouch_path, output_stacked_path, restorer, yolo_model, stacked=False, reverse_pixel=12, debug=False):
-    
+
     original_image = cv2.imread(original_image_path)
     gt = original_image.copy()
     if original_image is None:
@@ -59,25 +59,25 @@ def process_image_person(original_image_path, output_retouch_path, output_stacke
         debug_dir = "debug"
         image_debug_folder = os.path.join(debug_dir, image_name)
         os.makedirs(image_debug_folder, exist_ok=True)
-    
+
     results = yolo_model.predict(original_image_path, imgsz=1024, conf=0.35, classes=[0])
-    
+
     detected_boxes = []
     for result in results:
         boxes = result.boxes
         boxes_xyxy = boxes.xyxy.cpu().numpy().tolist()
         print(boxes_xyxy)
         detected_boxes.extend(boxes_xyxy)
-    
+
     window_size = 512
-    
+
     for box in detected_boxes:
         retouched_region = retouch_bbox(original_image, box, restorer, window_size, reverse_pixel, debug, image_debug_folder)
         x1, y1, x2, y2 = map(int, box)
         original_image[y1:y2, x1:x2] = retouched_region
-    
+
     cv2.imwrite(output_retouch_path, original_image)
-    
+
     if stacked:
         hstack_image = np.hstack((gt, original_image))
         cv2.imwrite(output_stacked_path, hstack_image)
@@ -88,17 +88,17 @@ def main(original_images_dir, output_retouch_dir, output_stack_dir, model_path, 
         os.makedirs(output_retouch_dir)
     if stacked:
         if not os.path.exists(output_stack_dir):
-            os.makedirs(output_stack_dir)    
+            os.makedirs(output_stack_dir)
     original_images = sorted(os.listdir(original_images_dir))
-    
+
     yolo_model = YOLO("yolov8x.pt")
-    
+
     restorer = GFPGANer(
         model_path=model_path,
         arch="original",
         channel_multiplier=1,
         bg_upsampler=None)
-    
+
     for original_image_name in original_images:
         original_image_path = os.path.join(original_images_dir, original_image_name)
         output_retouch_path = os.path.join(output_retouch_dir, original_image_name)
@@ -114,10 +114,12 @@ def main(original_images_dir, output_retouch_dir, output_stack_dir, model_path, 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Retouch skin areas in detected persons.")
+
+    parser.add_argument("--retouch_model_path", type=str, default="experiments/pretrained_models/retouch_20231211.pth", help="Path to the retouch model.")
+
     parser.add_argument("--original_images_dir", type=str, default="inputs/whole_imgs/", help="Path to the directory of original images.")
     parser.add_argument("--output_retouch_dir", type=str, default="outputs/pred_imgs", help="Path to save the retouched images.")
     parser.add_argument("--output_stack_dir", type=str, default="outputs/stacked_imgs", help="Path to save the stack retouched images.")
-    parser.add_argument("--retouch_model_path", type=str, default="experiments/pretrained_models/retouch_20231211.pth", help="Path to the retouch model.")
     parser.add_argument('--stacked', action='store_true', help='Stack the images')
     parser.add_argument('--reverse_pixel', type=int, default=12, help='Pixel offset for the sliding window.')
     parser.add_argument('--debug', action='store_true', help='Save sliding windows for debugging.')

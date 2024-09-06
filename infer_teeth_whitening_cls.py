@@ -1,4 +1,4 @@
-import os
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        import os
 import cv2
 import dlib
 import argparse
@@ -112,14 +112,11 @@ class TeethWhitening:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Teeth Whitening")
-    parser.add_argument("-gtb", "--gtb_model", type=str,
-                        default="/data/trained_models/Yolo/8_July_Glasses_teeth_Detector/best.pt",
-                        help="Path to the glasses, teeth and braces detector model")
-    parser.add_argument("-tw", "--teeth_whitening", type=str,
-                        default="/data/trained_models/gfpgan/20240831_teeth/net_g_760000.pth",
-                        help="Path to the teeth whitening model")
-    parser.add_argument("-imp", "--img_path", type=str, default="3.png",
-                        help="Path to the directory of original images")
+
+    parser.add_argument("-gtb","--gtb-model", type=str, default="/data/trained_models/yolo/yolov8x_face_parts_20240708.pt", help="Path to the  glasses, teeth and braces detector model")
+    parser.add_argument("-tw","--teeth-whitening", type=str, default="/data/trained_models/gfpgan/20240831_teeth/net_g_760000.pth", help="Path to the teeth whitening model")
+
+    parser.add_argument("-imp", "--img-path", type=str, default="3.png", help="Path to the directory of original images")
     args = parser.parse_args()
 
     teeth_whitener = TeethWhitening(args.gtb_model, args.teeth_whitening)

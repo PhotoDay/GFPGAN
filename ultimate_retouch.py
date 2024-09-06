@@ -125,7 +125,7 @@ def square_cropped_gtb(image_array, bbox, target_size=512):
 def restore_cropped_gtb(resized_image, original_image, bbox, padding_info):
     """
     Restore a cropped and resized image to its original location in the original image.
-    
+
     Args:
         resized_image (np.array): The image resized to target size (512x512).
         original_image (np.array): The original image from which cropping was done.
@@ -214,7 +214,7 @@ def full_body_retouch(image, bbox, restorer, window_size=512, reverse_pixel=12,
 def process_image_person(args, original_image_path, output_retouch_path,
                         output_stacked_path, models_dict):
     original_image = cv2.imread(original_image_path)
-    
+
     if original_image is None:
         print(f"Error loading image: {original_image_path}")
         return
@@ -274,7 +274,7 @@ def process_image_person(args, original_image_path, output_retouch_path,
                         model_output = image_debug_folder_t + '/model_output' + \
                                        str(i) + '.png'
                         restored = image_debug_folder_t + '/restored' + str(i) +\
-                                   '.png' 
+                                   '.png'
                         stacked = image_debug_folder_t + '/stacked' + str(i) +\
                                  '.png'
                         cv2.imwrite(face_name, face)
@@ -312,7 +312,7 @@ def process_image_person(args, original_image_path, output_retouch_path,
                         model_output = image_debug_folder_g + '/model_output' + \
                                        str(i) + '.png'
                         restored = image_debug_folder_g + '/restored' + str(i) +\
-                                   '.png' 
+                                   '.png'
                         stacked = image_debug_folder_g + '/stacked' + str(i) +\
                                  '.png'
                         cv2.imwrite(face_name, face)
@@ -410,47 +410,47 @@ if __name__ == "__main__":
     ##########################  I/O Directory Paths   ##########################
     # original images dir
     parser.add_argument("-oid","--original_images_dir", type=str,
-        default="/data/pd/datasets/colorcorr/Selected/ground_truth/gt", help="Path to the directory of original images")
+        default="/data/datasets/colorcorr/Selected/ground_truth/gt", help="Path to the directory of original images")
     # output retouch dir
     parser.add_argument("-ord","--output_retouch_dir", type=str,
-        default="/data/pd/datasets/colorcorr/Selected/ground_truth/Results/Retouched", help="Path to save the retouched images")
+        default="/data/datasets/colorcorr/Selected/ground_truth/Results/Retouched", help="Path to save the retouched images")
     # output stack dir
     parser.add_argument("-osd", "--output_stack_dir", type=str,
-        default="/data/pd/datasets/colorcorr/Selected/ground_truth/Results/Stacked",
+        default="/data/datasets/colorcorr/Selected/ground_truth/Results/Stacked",
         help="Path to save the stack retouched images")
     # output debug dir
     parser.add_argument("-dbgd","--debug_dir", type=str,
-        default="/data/pd/datasets/colorcorr/Selected/ground_truth/Results/Debug", help="Path to save the retouched images")
+        default="/data/datasets/colorcorr/Selected/ground_truth/Results/Debug", help="Path to save the retouched images")
     ##########################  I/O Directory Paths   ##########################
 
     ##########################   Model Paths          ##########################
     # full body retouch
     parser.add_argument("-fbr","--full_body_retouch", type=str,
-        default="/data/pd/trained_models/pd_retouch_subface_20231214.pth",
+        default="/data/trained_models/pd_retouch_subface_20231214.pth",
         help="Path to the full body retouch model")
     # teeth whitening
     parser.add_argument("-tw","--teeth_whitening", type=str,
-        default="/data/pd/trained_models/gfpgan/20240831_teeth/net_g_760000.pth",
+        default="/data/trained_models/gfpgan/20240831_teeth/net_g_760000.pth",
         help="Path to the teeth whitening model")
     # glass glare
     parser.add_argument("-gr","--glare_removal", type=str,
-        default="/data/pd/trained_models/gfpgan/20240831_glare/net_g_620000.pth",
+        default="/data/trained_models/gfpgan/20240831_glare/net_g_620000.pth",
         help="Path to the glass glare model")
     # face retouching
     parser.add_argument("-fr","--face_retouching", type=str,
-        default="/data/pd/trained_models/pd_retouch_subface_20231214.pth",
+        default="/data/trained_models/pd_retouch_subface_20231214.pth",
         help="Path to the face retouching model")
     # glasses, teeth and braces detector
     parser.add_argument("-gtb","--gtb_model", type=str,
-        default="/data/pd/trained_models/Yolo/8_July_Glasses_teeth_Detector/best.pt",
+        default="/data/trained_models/yolo/yolov8x_face_parts_20240708.pt",
         help="Path to the  glasses, teeth and braces detector model")
     # yolo person detection model
     parser.add_argument("-yolo","--yolo_model", type=str,
-        default="/data/pd/trained_models/Yolo/yolo_person_detector/yolov8x.pt",
+        default="/data/trained_models/yolo/yolov8x_person.pt",
         help="Path to the YOLOv8x model")
     # yunet face detection model
     parser.add_argument("-yu","--yunet_model", type=str,
-        default="/data/pd/trained_models/Face_DETECTION/yunet.onnx",
+        default="/data/trained_models/face_detection/yunet.onnx",
         help="Path to the yunet model")
     ##########################   Model Paths       #############################
 

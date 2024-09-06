@@ -55,18 +55,14 @@ def square_cropped_gtb(image_array, bbox, target_size=512):
         padding_bottom = padding_needed - padding_top
     new_top = top - padding_top
     new_bottom = bottom + padding_bottom
-    cropped_image = image_array[max(new_top, 0):min(new_bottom,
-                               image_array.shape[0]), left:right]
+    cropped_image = image_array[max(new_top, 0):min(new_bottom, image_array.shape[0]), left:right]
     pad_top = abs(min(new_top, 0))
     pad_bottom = abs(max(new_bottom - image_array.shape[0], 0))
     if pad_top > 0 or pad_bottom > 0:
-        cropped_image = np.pad(cropped_image, ((pad_top, pad_bottom),
-                              (0, 0), (0, 0)), mode='constant',
-                              constant_values=0)
+        cropped_image = np.pad(cropped_image, ((pad_top, pad_bottom), (0, 0), (0, 0)), mode='constant', constant_values=0)
     cropped_width = cropped_image.shape[1]
     cropped_height = cropped_image.shape[0]
-    resized_image = cv2.resize(cropped_image, (target_size, target_size),
-                              interpolation=cv2.INTER_LANCZOS4)
+    resized_image = cv2.resize(cropped_image, (target_size, target_size), interpolation=cv2.INTER_LANCZOS4)
     return {
         'resized_image': resized_image,
         'padding_top': padding_top,
@@ -81,9 +77,7 @@ def restore_cropped_gtb(resized_image, original_image, bbox, padding_info):
     padding_bottom = padding_info['padding_bottom']
     cropped_width = padding_info['cropped_width']
     cropped_height = padding_info['cropped_height']
-    resized_padded_image = cv2.resize(resized_image,
-                                     (cropped_width, cropped_height),
-                                     interpolation=cv2.INTER_LANCZOS4)
+    resized_padded_image = cv2.resize(resized_image, (cropped_width, cropped_height), interpolation=cv2.INTER_LANCZOS4)
     if padding_top > 0:
         resized_padded_image = resized_padded_image[padding_top:, :]
     if padding_bottom > 0:
@@ -108,10 +102,7 @@ def perform_teeth_whitening(args):
             if mouth_bbox is not None:
                 padding_info = square_cropped_gtb(face, mouth_bbox[0])
                 white_teeth = teeth_whitener.enhance_part(padding_info['resized_image'])
-                restored_white_teeth_face = restore_cropped_gtb(white_teeth,
-                                                          face.copy(),
-                                                          mouth_bbox[0],
-                                                          padding_info)
+                restored_white_teeth_face = restore_cropped_gtb(white_teeth, face.copy(), mouth_bbox[0], padding_info)
                 face = restored_white_teeth_face.copy()
             else:
                 print("Teeth not detected")
@@ -123,14 +114,11 @@ def perform_teeth_whitening(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Teeth Whitening")
-    parser.add_argument("-gtb","--gtb_model", type=str,
-        default="/data/trained_models/Yolo/8_July_Glasses_teeth_Detector/best.pt",
-        help="Path to the  glasses, teeth and braces detector model")
-    parser.add_argument("-tw","--teeth_whitening", type=str,
-        default="/data/trained_models/gfpgan/20240831_teeth/net_g_760000.pth",
-        help="Path to the teeth whitening model")
-    parser.add_argument("-imp","--img_path", type=str, default="3.png",
-        help="Path to the directory of original images")
+
+    parser.add_argument("-gtb","--gtb-model", type=str, default="/data/trained_models/yolo/yolov8x_face_parts_20240708.pt", help="Path to the  glasses, teeth and braces detector model")
+    parser.add_argument("-tw","--teeth-whitening", type=str, default="/data/trained_models/gfpgan/20240831_teeth/net_g_760000.pth", help="Path to the teeth whitening model")
+
+    parser.add_argument("-imp","--img-path", type=str, default="3.png", help="Path to the directory of original images")
     args = parser.parse_args()
     img = perform_teeth_whitening(args)
     cv2.imwrite("test_tw.png", img)

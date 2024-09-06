@@ -88,13 +88,15 @@ def main(in_dir, out_dir, out_stack_dir, retouch_model_path, yolo_model_path, gt
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Glass glare removal.")
+
+    parser.add_argument("-rm", "--retouch-model-path", type=str, default="/data/trained_models/gfpgan/20240814_glare/net_g_740000.pth", help="Path to the retouch model.")
+    parser.add_argument("-ym", "--yolo-model-path", type=str, default="/data/trained_models/yolo/yolov8x_person.pt")
+
     parser.add_argument("-id", "--in-dir", type=str, default="/home/humayunirshad/Desktop/glare_removal/trainset_2/or", help="Path to the directory of original images.")
     parser.add_argument("-od", "--out-dir", type=str, default="", help="Path to save the glare removed images images.")
-    parser.add_argument("-osd", "--out-stack-dir", type=str, default="/home/humayunirshad/Desktop/glare_removal/___results/GFPGAN/trainset", help="Path to save the stack retouched images.")
-    parser.add_argument("-mp", "--retouch-model-path", type=str, default="/data/pd/saved_models_danial/gfpgan/20240814_glare/net_g_740000.pth", help="Path to the retouch model.")
-    parser.add_argument("-yp", "--yolo-model-path", type=str, default="/data/pd/saved_models_danial/Yolo/8_July_Glasses_teeth_Detector/best.pt")
-    parser.add_argument("-gd", "--gt_dir", type=str, default="/home/humayunirshad/Desktop/glare_removal/trainset_2/gt", help="Path to the directory of ground truth images.")
-    parser.add_argument("-c", "--class_id", default=0, type=int, help="Class ID for Yolo model object[0: glass, 1:teeth, 2:braces]")
+    parser.add_argument("-osd", "--out-stack-dir", type=str, default="/home/humayunirshad/Desktop/glare_removal/results/GFPGAN/trainset", help="Path to save the stack retouched images.")
+    parser.add_argument("-gd", "--gt-dir", type=str, default="/home/humayunirshad/Desktop/glare_removal/trainset_2/gt", help="Path to the directory of ground truth images.")
+    parser.add_argument("-c", "--class-id", default=0, type=int, help="Class ID for Yolo model object[0: glass, 1:teeth, 2:braces]")
     args = parser.parse_args()
 
     main(args.in_dir, args.out_dir, args.out_stack_dir, args.retouch_model_path, args.yolo_model_path, args.gt_dir, class_id=args.class_id)

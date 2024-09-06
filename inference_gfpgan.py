@@ -88,7 +88,7 @@ def main():
         raise ValueError(f'Wrong model version {args.version}.')
 
     # determine model paths
-    model_path = '/data/pd/saved_models_danial/gfpgan/202408_18_glare/net_g_95000.pth'#os.path.join('experiments/pretrained_models', model_name + '.pth')
+    model_path = '/data/trained_models/gfpgan/202408_18_glare/net_g_95000.pth' #os.path.join('experiments/pretrained_models', model_name + '.pth')
     if not os.path.isfile(model_path):
         model_path = os.path.join('gfpgan/weights', model_name + '.pth')
     if not os.path.isfile(model_path):
